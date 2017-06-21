@@ -4,7 +4,7 @@ import copy
 import matplotlib.pyplot as plt
 import tkinter
 
-n = 12
+n = 5
 
 def createG(n): #generate random 4 regular graph with n vertices
     g = nx.random_regular_graph(4, n, seed= None)
@@ -21,7 +21,6 @@ def localCutAlg(g):
             g.node[v]['c'] += g[v][nbr]['weight']
     nodes = list(g.nodes())
     nodes.sort(key=lambda x: g.node[x]['c'], reverse= True)
-
     partition = [nodes.pop(0)]
 
     #for u in nodes:
@@ -32,18 +31,20 @@ def localCutAlg(g):
 def partitionCheck(g, partition):
 #checks partition for local search optimality
 #returns nodeset that increases cut
-    algResult = nx.cut_size(g, partition, weight = 'weight')
+    algResult = nx.cut_size(g, set(partition), T=None, weight = 'weight')
     result = True
     nodeSet = []
     for v in g:
-        print(v)
         p = copy.deepcopy(partition)
         if v in partition:
             p.remove(v)
         else:
             p.append(v)
-            print(p)
-        neighborCut = nx.cut_size(g, p, 'weight')
+        p = set(p)
+        neighborCut = nx.cut_size(g, p, T=None, weight='weight')
+
+        print(p)
+        print(neighborCut)
         if neighborCut > algResult:
             result = False
             nodeSet.append(v)
