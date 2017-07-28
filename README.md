@@ -19,7 +19,7 @@ graphs with maximum degree 4. (Elsaesser, Tobias)
 
 Objective 1:
 --------
-files: poljaktest.py, GraphGen.py, deg4char.py
+files: poljakTest.py, GraphGen.py, deg4char.py
 
 Testing feasibility of Poljak's (SICOMP 1995) method on finite simple graphs with
 maximum degree 4. outputs objective function vector c and matrix m as text file
