@@ -41,5 +41,5 @@ Poljak, S. 1995: http://dl.acm.org/citation.cfm?id=210959
 Elsaesser, Tobias: https://arxiv.org/abs/1004.5329 for an overview
 
 
--
+------
 Work done at Operations Research at the Technical University of Munich
