@@ -1,6 +1,6 @@
 import random
 import math
-for i in range(0, 10000):
+for i in range(0, 100000):
     s = []
     for x in range(0,4):
         s.append(math.ceil(random.expovariate(0.005)))

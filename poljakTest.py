@@ -1,39 +1,65 @@
+
+
+#testing feasibility of Poljak's (SICOMP 1995) method on finite simple graphs with
+#maximum degree 4. outputs objective function vector c and matrix m as text file
+#for input into mathematica LinearProgramming(c,m,b,lu,dom) solver.
+
+#components:
+#inequality determination
+#constraint matrix construction
+#contraint matrix check
+#mathematica code output
+
 import networkx as nx
 import random
 import copy
 import matplotlib.pyplot as plt
 import tkinter
-
+import numpy as np
+#custom packages:
 import GraphGen
 import Verifier
 
-#testing feasibility of Poljak's (SICOMP 1995) method applied to graphs with maximum
-#degree 4. outputs objective function vector c and matrix m as text file
-#for input into mathematica LinearProgramming(c,m,b,lu,integer) solver.
-
-#components:
-#inequality determination
-#constraint matrix construction
-
-
-def main(nodes):
+def main():
+    nodes = 20
     gen = GraphGen.GraphGen(nodes)
     g = gen.gPoljak()
-    print(g)
-    f = open('ip.txt', 'w')
-    mAndb = createMandB(g)
 
-    f.write("LinearProgramming[" + createC(g) + ", " + mAndb[0]
-            + ", " + mAndb[1] + ", " + "0" + ", " + "Integers]")
+    (m, b, mArr, bArr, x) = create_mbx(g)
+    c = createC(g)
+    checkMatrices(mArr, bArr, x) #check for valid IP
+
+    f = open('ip.txt', 'w') #write mathematica code to file
+    f.write("LinearProgramming[" + c + ", " + m
+            + ", " + b + ", " + "0" + ", " + "Integers]")
+    """f.write(c + ", " + m
+            + ", " + b + ", " + "0" + ", " + "Integers")
+    """
     f.close()
+
+def checkMatrices(m, b, x):
+    m = np.matrix(m)
+    x = np.matrix(x)
+    b = np.matrix(b)
+    print(m)
+    print(x)
+    print(b)
+    compare = np.greater_equal(m * np.transpose(x), np.transpose(b))
+    print(m *np.transpose(x))
+    assert not np.in1d(False, compare)[0] #see if mx>= not true
 
 def createB(g):
     return "{" + len(g.edges)*" 0," + "0}"
 
-def createMandB(g):
+def create_mbx(g):
     e = list(g.edges())
     m = "{"
+    mArr = []
     b = []
+    x = []
+    for edge in e:
+        x.append(g[edge[0]][edge[1]]['w'])
+    x.append(max(x)) #max edge weight as max variable
     for v in g:
         eList = [] #list of incident edges
         for nbr in g[v]: #creating ordered tuples (needed to index properly)
@@ -49,7 +75,7 @@ def createMandB(g):
         nodeType = classifyNode(wList)
         line1 = [0] * (len(g.edges) + 1) #create list of 0s to represent row in matrix
         line2 = [0] * (len(g.edges) + 1)
-        two = True #need two lines in matrix?
+        two = True #need two rows in matrix?
         if nodeType == 1:
             line1[e.index(eList[0])] = 1
             line1[e.index(eList[1])] = 1
@@ -101,13 +127,23 @@ def createMandB(g):
         if two:
             m += "{" + str(line1)[1:-1] + "}, "
             m += "{" + str(line2)[1:-1] + "}, "
+            mArr.append(line1)
+            mArr.append(line2)
         else:
             m += "{" + str(line1)[1:-1] + "}, "
+            mArr.append(line1)
 
+    bArr = copy.deepcopy(b)
     b = str(b)
-    b = "{" + b[1:-1] + ", 0}"
-    m += "{" + len(g.edges)*"-1, " + "1}}"
-    return (m, b)
+    b = "{" + b[1:-1] + ", 0" * len(g.edges) + "}" #add extra var constraits
+    bArr = bArr + [0] * len(g.edges)
+
+    for q in range(0, len(g.edges)):
+        m += "{" + "0, " * q + "-1, " + "0, " * (len(g.edges) - q - 1) + "1}, "
+        mArr.append([0] * q + [-1] + [0] * (len(g.edges) - q - 1) + [1])
+    m = m[0:-2]
+    m += "}"
+    return (m, b, mArr, bArr, x)
 
 def classifyNode(wList):
     a = wList[3]
@@ -129,8 +165,8 @@ def classifyNode(wList):
         print('failed to classify')
 
 def createC(g):
-    c = "{" + "0, "*len(g.edges) + "1}"
+    c = "{" + "0, " * len(g.edges) + "1}"
     return c
 
 if __name__ == '__main__':
-    main(5)
+    main()

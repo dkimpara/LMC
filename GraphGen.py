@@ -27,7 +27,7 @@ class GraphGen:
         return g
 
 def seqGen(n):
-    seq = [1,2]
+    seq = [1,2] #start with invalid deg seq
     while not nx.is_valid_degree_sequence(seq):
         seq = []
         for x in range(0,n):
