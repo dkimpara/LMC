@@ -1,7 +1,10 @@
 # localMaxCut
 Local Max-Cut algorithm test environment with Python package NetworkX
+
 Author: Dhamma Kimpara
+
 Python 3.5.2
+
 Packages: NetworkX, random, copy, matplotlib, tkinter, numpy
 
 AMS subject classifications: 68Q25, 90C10, 90C27
@@ -32,6 +35,7 @@ error identification, and graph display.
 
 
 References:
+----------
 Poljak, S. 1995: http://dl.acm.org/citation.cfm?id=210959
 
 Elsaesser, Tobias: https://arxiv.org/abs/1004.5329 for an overview
