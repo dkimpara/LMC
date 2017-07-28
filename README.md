@@ -14,7 +14,7 @@ Problem setting:
 The complexity of local max-cut with FLIP-neighborhood 
 is known for finite simple graphs with maximum degree 3 and maximum degree 
 5 and above. Hence we attempt to establish a polynomial time algorithm for 
-graphs with maximum degree 4. (Elsaesser, Tobias)
+graphs with maximum degree 4. (Elsaesser and Tobias)
 
 
 Objective 1:
@@ -38,7 +38,7 @@ References:
 ----------
 Poljak, S. 1995: http://dl.acm.org/citation.cfm?id=210959
 
-Elsaesser, Tobias: https://arxiv.org/abs/1004.5329 for an overview
+Elsaesser and Tobias: https://arxiv.org/abs/1004.5329 for an overview
 
 
 ------
