@@ -29,7 +29,6 @@ class Verifier:
         return (result, nodeSet)
 
     def graphDisplay(self, g, partition, nodeSet): #display graph with the partition
-
         complement = []
         for v in g:
             if v not in partition:

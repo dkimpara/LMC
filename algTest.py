@@ -16,7 +16,7 @@ if __name__ == '__main__':
 def main(nodes, numberOfTests):
     for k in range(0, numberOfTests):
         gen = GraphGen(nodes)
-        g = gen.g()
+        g = gen.randomMaxDeg4Graph()
         partition = Alg.localCutAlg(g)
         result = Verifier.partitionCheck(g, partition)
         if len(result[1])>1:

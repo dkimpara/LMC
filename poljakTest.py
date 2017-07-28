@@ -30,11 +30,11 @@ import Verifier
 def main():
     nodes = 20
     gen = GraphGen.GraphGen(nodes)
-    g = gen.gPoljak()
+    g = gen.random4RegularGraph()
 
     (m, b, mArr, bArr, x) = create_mbx(g)
     c = createC(g)
-    checkMatrices(mArr, bArr, x) #check for valid IP
+    checkIP(mArr, bArr, x)
 
     f = open('ip.txt', 'w') #write mathematica code to file
     f.write("LinearProgramming[" + c + ", " + m
@@ -44,16 +44,16 @@ def main():
     """
     f.close()
 
-def checkMatrices(m, b, x): #check that the IP mx>=b is valid
+def checkIP(m, b, x): #check that the IP mx>=b is valid
     m = np.matrix(m)
-    x = np.matrix(x)
+    x = np.matrix(x) #vector with original edge weights
     b = np.matrix(b)
     print(m)
     print(x)
     print(b)
     compare = np.greater_equal(m * np.transpose(x), np.transpose(b))
     print(m *np.transpose(x))
-    assert not np.in1d(False, compare)[0] #see if mx>= not true
+    assert not np.in1d(False, compare)[0] #see if mx>=b not true
 
 def createB(g):
     return "{" + len(g.edges)*" 0," + "0}"
@@ -64,8 +64,8 @@ def create_mbx(g):
     mArr = [] #array version for verification purposes
     b = []
     x = []
-    for edge in e:
-        x.append(g[edge[0]][edge[1]]['w'])
+    for (u, v) in e: #create verification vector with original edge weights
+        x.append(g[u][v]['w'])
     x.append(max(x)) #max edge weight as max variable
     for v in g:
         eList = [] #list of incident edges
@@ -76,8 +76,8 @@ def create_mbx(g):
                 eList.append((v, nbr))
         eList.sort(key=lambda x: g[x[0]][x[1]]['w']) #ascending order
         wList = [] #list of edge weights
-        for edge in eList:
-            wList.append(g[edge[0]][edge[1]]['w'])
+        for (u, v) in eList:
+            wList.append(g[u][v]['w'])
 
         nodeType = classifyNode(wList)
         line1 = [0] * (len(g.edges) + 1) #create list of 0s to represent row in matrix

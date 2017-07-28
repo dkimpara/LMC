@@ -5,15 +5,17 @@ import matplotlib.pyplot as plt
 import tkinter
 
 class Alg:
-    def localCutAlg(self, g):
+    def localCutAlg(self, g): #g graph with edge weights
         for v in g:
             g.node[v]['c'] = 0
             for nbr in g[v]:
                 g.node[v]['c'] += g[v][nbr]['w']
         nodes = list(g.nodes())
         nodes.sort(key=lambda x: g.node[x]['c'], reverse= True)
-        partition = [nodes.pop(0)] #nodes is now the complement of partition
-        for u in nodes:
+
+        partition = [nodes.pop(0)]
+        complement = nodes
+        for u in complement:
             connected = False
             adj = 0
             for v in partition:

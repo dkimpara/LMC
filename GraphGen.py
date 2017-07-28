@@ -1,5 +1,3 @@
-#graph generator class
-
 import networkx as nx
 import random
 import copy
@@ -10,7 +8,7 @@ class GraphGen:
     """Random Max Degree 4 Graph Generator"""
     def __init__(self, nodes):
         self.n = nodes
-    def g(self):
+    def randomMaxDeg4Graph(self):
         while True:
             try:
                 seq = seqGen(self.n)
@@ -18,14 +16,14 @@ class GraphGen:
                 break
             except nx.NetworkXError:
                 pass
-        for e in g.edges():
-            g[e[0]][e[1]]['w'] = random.randint(1, 2**self.n)
-
+        for (u, v) in g.edges():
+            g[u][v]['w'] = random.randint(1, 2**self.n)
         return g
-    def gPoljak(self):
+
+    def random4RegularGraph(self):
         g = nx.random_regular_graph(4, self.n)
-        for e in g.edges():
-            g[e[0]][e[1]]['w'] = random.randint(1, 2**self.n)
+        for (u, v) in g.edges():
+            g[u][v]['w'] = random.randint(1, 2**self.n)
         return g
 
 def seqGen(n):
