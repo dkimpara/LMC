@@ -3,6 +3,13 @@
 #testing feasibility of Poljak's (SICOMP 1995) method on finite simple graphs with
 #maximum degree 4. outputs objective function vector c and matrix m as text file
 #for input into mathematica LinearProgramming(c,m,b,lu,dom) solver.
+#
+#IP formulation: given graph G with n vertices V(G) = {0, 1, ..., n-1}
+#                minimize: x_{n}
+#                subject to: inequality determined in classifyNode for all v in V(G)
+#                            x_{n} >= x_{i} for all i from 0 to n - 1
+#
+#hence encoding that we want to minimize the maximum edge weight
 
 #components:
 #inequality determination
@@ -37,7 +44,7 @@ def main():
     """
     f.close()
 
-def checkMatrices(m, b, x):
+def checkMatrices(m, b, x): #check that the IP mx>=b is valid
     m = np.matrix(m)
     x = np.matrix(x)
     b = np.matrix(b)
@@ -54,7 +61,7 @@ def createB(g):
 def create_mbx(g):
     e = list(g.edges())
     m = "{"
-    mArr = []
+    mArr = [] #array version for verification purposes
     b = []
     x = []
     for edge in e:
@@ -133,7 +140,7 @@ def create_mbx(g):
             m += "{" + str(line1)[1:-1] + "}, "
             mArr.append(line1)
 
-    bArr = copy.deepcopy(b)
+    bArr = copy.deepcopy(b) #array version for verification purposes
     b = str(b)
     b = "{" + b[1:-1] + ", 0" * len(g.edges) + "}" #add extra var constraits
     bArr = bArr + [0] * len(g.edges)

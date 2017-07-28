@@ -1,3 +1,5 @@
+#graph generator class
+
 import networkx as nx
 import random
 import copy

@@ -1,5 +1,9 @@
+#test to verify that degree four vertex characterization is correct
+
 import random
 import math
+
+
 for i in range(0, 100000):
     s = []
     for x in range(0,4):

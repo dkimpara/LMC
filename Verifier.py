@@ -1,3 +1,5 @@
+#solution verifier, error identification, and graphdisplay for algTest
+
 import networkx as nx
 import random
 import copy
