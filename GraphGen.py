@@ -1,8 +1,6 @@
 import networkx as nx
 import random
-import copy
-import matplotlib.pyplot as plt
-import tkinter
+
 
 class GraphGen:
     """Random Max Degree 4 Graph Generator"""
@@ -27,9 +25,9 @@ class GraphGen:
         return g
 
 def seqGen(n):
-    seq = [1,2] #start with invalid deg seq
+    seq = [1, 2] #start with invalid deg seq
     while not nx.is_valid_degree_sequence(seq):
         seq = []
-        for x in range(0,n):
-            seq.append(random.randint(1,4))
+        for x in range(0, n):
+            seq.append(random.randint(1, 4))
     return seq

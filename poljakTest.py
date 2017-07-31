@@ -1,5 +1,3 @@
-
-
 #testing feasibility of Poljak's (SICOMP 1995) method on finite simple graphs with
 #maximum degree 4. outputs objective function vector c and matrix m as text file
 #for input into mathematica LinearProgramming(c,m,b,lu,dom) solver.
@@ -16,19 +14,21 @@
 #constraint matrix construction
 #contraint matrix check
 #mathematica code output
+#note: g.edges() always lists edges in increasing lexicographic order
 
 import networkx as nx
 import random
 import copy
-import matplotlib.pyplot as plt
-import tkinter
 import numpy as np
+import subprocess
+import re
 #custom packages:
 import GraphGen
+import bruteForceLocalMaxCut
 import Verifier
 
 def main():
-    nodes = 20
+    nodes = 5
     gen = GraphGen.GraphGen(nodes)
     g = gen.random4RegularGraph()
 
@@ -36,27 +36,54 @@ def main():
     c = createC(g)
     checkIP(mArr, bArr, x)
 
-    f = open('ip.txt', 'w') #write mathematica code to file
-    f.write("LinearProgramming[" + c + ", " + m
-            + ", " + b + ", " + "0" + ", " + "Integers]")
-    """f.write(c + ", " + m
-            + ", " + b + ", " + "0" + ", " + "Integers")
-    """
+    f = open('ip.m', 'w') #write mathematica script
+    f.write("Print[LinearProgramming[" + c + ", " + m
+            + ", " + b + ", " + "0" + ", " + "Integers]]")
     f.close()
+
+    solution = executeMathematicaScript()
+
+    gNewWeights = makeNewG(g, solution)
+
+    print(checkNewG(gNewWeights, g))
+
+def checkNewG(newG, g):
+    localMaxima = bruteForceLocalMaxCut(g).findLocalMinima()
+    verifier = Verifier(newG)
+    for partition in localMaxima:
+        result, nodeSet = verifier.partitionCheck(partition)
+        if result == False:
+            return False
+    return True
+
+def makeNewG(g, solution):
+    gNew = g.copy()
+    pointer = 0
+    for (u, v) in gNew.edges():
+        gNew[u][v]['w'] = solution[pointer]
+        pointer += 1
+    return gNew
+
+def executeMathematicaScript():
+    mathOutput = str(subprocess.check_output(['math', '-script', 'ip.m']))
+    solution = convertStringtoList(mathOutput)
+    return(solution)
+
+def convertStringtoList(mathOutput):
+    pattern = "(?:\{|,\s)(\d+)"
+    solution = []
+    outputStr = re.findall(pattern, mathOutput)
+    print(outputStr)
+    for entry in outputStr:
+        solution.append(int(entry))
+    return solution
 
 def checkIP(m, b, x): #check that the IP mx>=b is valid
     m = np.matrix(m)
     x = np.matrix(x) #vector with original edge weights
     b = np.matrix(b)
-    print(m)
-    print(x)
-    print(b)
     compare = np.greater_equal(m * np.transpose(x), np.transpose(b))
-    print(m *np.transpose(x))
     assert not np.in1d(False, compare)[0] #see if mx>=b not true
-
-def createB(g):
-    return "{" + len(g.edges)*" 0," + "0}"
 
 def create_mbx(g):
     e = list(g.edges())
