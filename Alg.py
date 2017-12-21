@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import tkinter
 
 class Alg:
+    '''user defined algorithm to be tested'''
     def localCutAlg(self, g): #g graph with edge weights
         for v in g:
             g.node[v]['c'] = 0
